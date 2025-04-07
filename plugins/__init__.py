@@ -15,6 +15,6 @@ from .manhuafast import ManhuaFastClient
 #from .weebcentral import WeebCentralClient
 
 #18+ clients
-from .omgeascans import OmgeaScansClient
+from .omegascans import OmegaScansClient
 from .manga18fx import Manga18fxClient
 from .mangadistrict import MangaDistrictClient
