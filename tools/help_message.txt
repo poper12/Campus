@@ -1,7 +1,7 @@
 <blockquote>To download a manga just type the name of the manga you want to keep up to date.</blockquote>
 
 <b>For example:</b>
-`Fire Force`
+`Solo Leveling`
 
 <blockquote>Then you will have to choose the language of the manga. Depending on this language, you will be able to choose the website where you could download the manga. Here you will have the option to subscribe, or to choose a chapter to download. The chapters are sorted according to the website.</blockquote>
 <blockquote>✎ Bot Commands Overview</blockquote>
