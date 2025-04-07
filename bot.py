@@ -56,7 +56,6 @@ plugin_dicts: Dict[str, Dict[str, MangaClient]] = {
         "ManhwaClan": ManhwaClanClient(), 
         "Comick": ComickClient(),       
           },
-    },
     "🔞 18+": {
         "Manga18fx": Manga18fxClient(),
         "MangaDistrict": MangaDistrictClient(),
