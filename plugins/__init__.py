@@ -1,8 +1,8 @@
 from .client import MangaClient, MangaCard, MangaChapter
 
 # Not Working for render/koyeb [ONLY VPS]
-from .mgecko import MgekoClient
-from .asurascans import AsuraScansClient
+#from .mgecko import MgekoClient
+#from .asurascans import AsuraScansClient
 
 #Manhwa working clients
 from .mangadex import MangaDexClient
