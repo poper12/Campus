@@ -48,8 +48,8 @@ locks: Dict[int, asyncio.Lock] = dict()
 plugin_dicts: Dict[str, Dict[str, MangaClient]] = {
     "🇬🇧 EN": {
         "MangaDex": MangaDexClient(),
-        "Mgeko": MgekoClient(),
-        "ReaperScans": ReaperScansClient(),
+        #"Mgeko": MgekoClient(),
+        #"ReaperScans": ReaperScansClient(),
         "MangaBuddy": MangaBuddyClient(),    
         "MangaMob": mangamob(),
         "Manhuafast": ManhuaFastClient(),
