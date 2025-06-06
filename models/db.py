@@ -1,16 +1,11 @@
-import os
+import ssl
 from typing import Type, List, TypeVar, Optional
-
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel import SQLModel, Field, Session, select, delete
 from sqlmodel.ext.asyncio.session import AsyncSession
-
 from tools import LanguageSingleton
 
 T = TypeVar("T")
-
-#user_data = database['users']
-
 
 class ChapterFile(SQLModel, table=True):
     url: str = Field(primary_key=True)
@@ -18,7 +13,6 @@ class ChapterFile(SQLModel, table=True):
     file_unique_id: Optional[str]
     cbz_id: Optional[str]
     cbz_unique_id: Optional[str]
-    #telegraph_url: Optional[str]
 
 
 class MangaOutput(SQLModel, table=True):
@@ -44,6 +38,7 @@ class MangaName(SQLModel, table=True):
 class DB(metaclass=LanguageSingleton):
 
     def __init__(self, dbname: str = 'sqlite+aiosqlite:///test.db'):
+        connect_args = {}
         if dbname.startswith('postgres://'):
             dbname = dbname.replace('postgres://', 'postgresql+asyncpg://', 1)
         elif dbname.startswith('postgresql://'):
@@ -51,7 +46,12 @@ class DB(metaclass=LanguageSingleton):
         elif dbname.startswith('sqlite'):
             dbname = dbname.replace('sqlite', 'sqlite+aiosqlite', 1)
 
-        self.engine = create_async_engine(dbname)
+        # Handle sslmode=require in URL
+        if 'sslmode=require' in dbname:
+            dbname = dbname.replace('?sslmode=require', '').replace('&sslmode=require', '')
+            connect_args = {"ssl": ssl.create_default_context()}
+
+        self.engine = create_async_engine(dbname, connect_args=connect_args)
 
     async def connect(self):
         async with self.engine.begin() as conn:
@@ -99,4 +99,3 @@ class DB(metaclass=LanguageSingleton):
             async with session.begin():
                 statement = delete(Subscription).where(Subscription.user_id == user_id)
                 await session.exec(statement=statement)
-
