@@ -31,7 +31,7 @@ from tools.aqueue import AQueue
 from tools.flood import retry_on_flood
 
 
-OWNER_ID = 5543390445 # put owner id in number directly 
+OWNER_ID = 7547711783 # put owner id in number directly 
 auth_users = [5543390445, 5164955785, 5891177226, 7827086839, 6975428639] # eg: [83528911,836289,9362891] # eg: [83528911,836289,9362891]
 AUTH_USERS = auth_users + [OWNER_ID]
 
@@ -270,21 +270,16 @@ async def on_options_command(client: Client, message: Message):
     return await message.reply("Select the desired output format.", reply_markup=buttons)
 
 
-@bot.on_message(filters=filters.regex(r'^/'))
-async def on_unknown_command(client: Client, message: Message):
-    if message.from_user.id not in AUTH_USERS:
-        return await message.reply_text("<blockquote><b>I only work for @Manga_Campus, Ask my senpai to use me @aaru_2075.</b></blockquote>")
-    await message.reply("Unknown command")
-
-
 @bot.on_message(filters=filters.command(['addadmin']))
 async def add_admin(client, message):
+    if message.from_user.id != OWNER_ID:
+        logger.info(f"User {message.from_user.id} tried to add admin to the bot")
+        return await message.reply("You are not authorized to use this command.")
     try:
-        if message.from_user.id != 5543390445:
-            return await message.reply("You are not authorized to use this command.")
         user_id = int(message.text.split()[1])
         if user_id not in auth_users:
             auth_users.append(user_id)
+            AUTH_USERS.append(user_id) 
             await message.reply(f"User {user_id} added as admin.")
         else:
             await message.reply(f"User {user_id} is already an admin.")
@@ -293,17 +288,25 @@ async def add_admin(client, message):
 
 @bot.on_message(filters=filters.command(['removeadmin']))
 async def remove_admin(client, message):
+    if message.from_user.id != OWNER_ID:
+        logger.info(f"User {message.from_user.id} tried to remove admin from the bot")
+        return await message.reply("You are not authorized to use this command.")
     try:
-        if message.from_user.id != 5543390445:
-            return await message.reply("You are not authorized to use this command.")
         user_id = int(message.text.split()[1])
-        if user_id in auth_users and user_id != 5543390445:
+        if user_id in auth_users and user_id != OWNER_ID:
             auth_users.remove(user_id)
+            AUTH_USERS.remove(user_id)
             await message.reply(f"User {user_id} removed from admin list.")
         else:
             await message.reply(f"User {user_id} is not an admin or is the owner.")
     except Exception as e:
         await message.reply("Usage: /removeadmin <user_id>")
+
+@bot.on_message(filters=filters.regex(r'^/'))
+async def on_unknown_command(client: Client, message: Message):
+    if message.from_user.id not in AUTH_USERS:
+        return await message.reply_text("<blockquote><b>I only work for @Manga_Campus, Ask my senpai to use me @aaru_2075.</b></blockquote>")
+    await message.reply("Unknown command")
 
 @bot.on_message(filters=filters.text)
 async def on_message(client, message: Message):
