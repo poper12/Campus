@@ -22,6 +22,9 @@ from typing import Dict, Tuple, List, TypedDict
 from loguru import logger
 
 from models.db import DB, ChapterFile, Subscription, LastChapter, MangaName, MangaOutput
+# All usages of SQLModel objects are now Pydantic models, and DB uses MongoDB.
+# No changes needed for model usage, but all DB methods now use MongoDB.
+
 from pagination import Pagination
 from plugins.client import clean
 from tools.aqueue import AQueue
@@ -741,4 +744,4 @@ async def chapter_creation(worker_id: int = 0):
             logger.exception(f"Error sending chapter {chapter.name} to user {chat_id}")
         finally:
             pdf_queue.release(chat_id)
-        
+
