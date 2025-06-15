@@ -31,7 +31,7 @@ from tools.aqueue import AQueue
 from tools.flood import retry_on_flood
 
 
-OWNER_ID = 7547711783 # put owner id in number directly 
+OWNER_ID = 5543390445
 auth_users = [5543390445, 5164955785, 5891177226, 7827086839, 6975428639] # eg: [83528911,836289,9362891] # eg: [83528911,836289,9362891]
 AUTH_USERS = auth_users + [OWNER_ID]
 
