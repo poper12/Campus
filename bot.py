@@ -35,34 +35,6 @@ OWNER_ID = 5543390445 # put owner id in number directly
 auth_users = [5543390445, 5164955785, 5891177226, 7827086839, 6975428639] # eg: [83528911,836289,9362891] # eg: [83528911,836289,9362891]
 AUTH_USERS = auth_users + [OWNER_ID]
 
-# Admin management commands
-from pyrogram import filters
-
-@Client.on_message(filters.command(['addadmin']) & filters.user(OWNER_ID))
-async def add_admin(client, message):
-    try:
-        user_id = int(message.text.split()[1])
-        if user_id not in auth_users:
-            auth_users.append(user_id)
-            await message.reply(f"User {user_id} added as admin.")
-        else:
-            await message.reply(f"User {user_id} is already an admin.")
-    except Exception as e:
-        await message.reply("Usage: /addadmin <user_id>")
-
-@Client.on_message(filters.command(['removeadmin']) & filters.user(OWNER_ID))
-async def remove_admin(client, message):
-    try:
-        user_id = int(message.text.split()[1])
-        if user_id in auth_users and user_id != OWNER_ID:
-            auth_users.remove(user_id)
-            await message.reply(f"User {user_id} removed from admin list.")
-        else:
-            await message.reply(f"User {user_id} is not an admin or is the owner.")
-    except Exception as e:
-        await message.reply("Usage: /removeadmin <user_id>")
-
-
 mangas: Dict[str, MangaCard] = dict()
 chapters: Dict[str, MangaChapter] = dict()
 pdfs: Dict[str, str] = dict()
@@ -304,6 +276,30 @@ async def on_unknown_command(client: Client, message: Message):
         return await message.reply_text("<blockquote><b>I only work for @Manga_Campus, Ask my senpai to use me @aaru_2075.</b></blockquote>")
     await message.reply("Unknown command")
 
+
+@bot.on_message(filters=filters.command(['addadmin']) & filters.user(OWNER_ID))
+async def add_admin(client, message):
+    try:
+        user_id = int(message.text.split()[1])
+        if user_id not in auth_users:
+            auth_users.append(user_id)
+            await message.reply(f"User {user_id} added as admin.")
+        else:
+            await message.reply(f"User {user_id} is already an admin.")
+    except Exception as e:
+        await message.reply("Usage: /addadmin <user_id>")
+
+@bot.on_message(filters=filters.command(['removeadmin']) & filters.user(OWNER_ID))
+async def remove_admin(client, message):
+    try:
+        user_id = int(message.text.split()[1])
+        if user_id in auth_users and user_id != OWNER_ID:
+            auth_users.remove(user_id)
+            await message.reply(f"User {user_id} removed from admin list.")
+        else:
+            await message.reply(f"User {user_id} is not an admin or is the owner.")
+    except Exception as e:
+        await message.reply("Usage: /removeadmin <user_id>")
 
 @bot.on_message(filters=filters.text)
 async def on_message(client, message: Message):
