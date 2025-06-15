@@ -32,9 +32,35 @@ from tools.flood import retry_on_flood
 
 
 OWNER_ID = 5543390445 # put owner id in number directly 
-auth_users = [5543390445, 5164955785, 5891177226, 7827086839, 6975428639, 7547711783] # eg: [83528911,836289,9362891] # eg: [83528911,836289,9362891]
+auth_users = [5543390445, 5164955785, 5891177226, 7827086839, 6975428639] # eg: [83528911,836289,9362891] # eg: [83528911,836289,9362891]
 AUTH_USERS = auth_users + [OWNER_ID]
 
+# Admin management commands
+from pyrogram import filters
+
+@Client.on_message(filters.command(['addadmin']) & filters.user(OWNER_ID))
+async def add_admin(client, message):
+    try:
+        user_id = int(message.text.split()[1])
+        if user_id not in auth_users:
+            auth_users.append(user_id)
+            await message.reply(f"User {user_id} added as admin.")
+        else:
+            await message.reply(f"User {user_id} is already an admin.")
+    except Exception as e:
+        await message.reply("Usage: /addadmin <user_id>")
+
+@Client.on_message(filters.command(['removeadmin']) & filters.user(OWNER_ID))
+async def remove_admin(client, message):
+    try:
+        user_id = int(message.text.split()[1])
+        if user_id in auth_users and user_id != OWNER_ID:
+            auth_users.remove(user_id)
+            await message.reply(f"User {user_id} removed from admin list.")
+        else:
+            await message.reply(f"User {user_id} is not an admin or is the owner.")
+    except Exception as e:
+        await message.reply("Usage: /removeadmin <user_id>")
 
 
 mangas: Dict[str, MangaCard] = dict()
@@ -539,11 +565,13 @@ async def favourite_click(client: Client, callback: CallbackQuery):
     subs = await db.get(Subscription, (manga.url, str(callback.from_user.id)))
     if not subs and fav:
         await db.add(Subscription(url=manga.url, user_id=str(callback.from_user.id)))
-    if subs and not fav:
+        await callback.answer("You successfully subscribed!", show_alert=True)
+    elif subs and not fav:
         await db.erase(subs)
-    if subs and fav:
+        await callback.answer("You successfully unsubscribed!", show_alert=True)
+    elif subs and fav:
         await callback.answer("You are already subscribed", show_alert=True)
-    if not subs and not fav:
+    elif not subs and not fav:
         await callback.answer("You are not subscribed", show_alert=True)
     reply_markup = callback.message.reply_markup
     keyboard = reply_markup.inline_keyboard
