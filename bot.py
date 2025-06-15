@@ -277,9 +277,11 @@ async def on_unknown_command(client: Client, message: Message):
     await message.reply("Unknown command")
 
 
-@bot.on_message(filters=filters.command(['addadmin']) & filters.user(OWNER_ID))
+@bot.on_message(filters=filters.command(['addadmin']))
 async def add_admin(client, message):
     try:
+        if message.from_user.id != 5543390445:
+            return await message.reply("You are not authorized to use this command.")
         user_id = int(message.text.split()[1])
         if user_id not in auth_users:
             auth_users.append(user_id)
@@ -289,11 +291,13 @@ async def add_admin(client, message):
     except Exception as e:
         await message.reply("Usage: /addadmin <user_id>")
 
-@bot.on_message(filters=filters.command(['removeadmin']) & filters.user(OWNER_ID))
+@bot.on_message(filters=filters.command(['removeadmin']))
 async def remove_admin(client, message):
     try:
+        if message.from_user.id != 5543390445:
+            return await message.reply("You are not authorized to use this command.")
         user_id = int(message.text.split()[1])
-        if user_id in auth_users and user_id != OWNER_ID:
+        if user_id in auth_users and user_id != 5543390445:
             auth_users.remove(user_id)
             await message.reply(f"User {user_id} removed from admin list.")
         else:
